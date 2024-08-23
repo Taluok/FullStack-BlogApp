@@ -1,0 +1,51 @@
+import { ConnectDB } from "@/lib/config/db";
+import { NextResponse } from "next/server";
+import { writeFile } from 'fs/promises';
+import BlogModel from "@/lib/models/BlogModel";
+
+// Asegura que la base de datos esté conectada antes de cualquier operación
+const LoadDB = async () => {
+    await ConnectDB(); // Llama a ConnectDB
+}
+
+LoadDB();
+
+export async function GET(request) {
+    return NextResponse.json({
+        msg: "API Working",
+    });
+}
+
+export async function POST(request) {
+    try {
+        const formData = await request.formData();
+        const timestamp = Date.now();
+
+        // Procesa la imagen
+        const image = formData.get('image');
+        const imageByteData = await image.arrayBuffer();
+        const buffer = Buffer.from(imageByteData);
+        const path = `./public/${timestamp}_${image.name}`;
+        await writeFile(path, buffer);
+        const imgUrl = `/${timestamp}_${image.name}`;
+
+        // Crea el objeto de datos del blog
+        const blogData = {
+            title: formData.get('title'),
+            description: formData.get('description'),
+            category: formData.get('category'),
+            author: formData.get('author'),
+            image: imgUrl,
+            authorImg: formData.get('authorImg'),
+        };
+
+        // Guarda el blog en la base de datos
+        await BlogModel.create(blogData);
+        console.log("Blog Guardado");
+
+        return NextResponse.json({ success: true, msg: "Blog Añadido" });
+    } catch (error) {
+        console.error("Error al guardar el blog:", error);
+        return NextResponse.json({ success: false, msg: "Error al guardar el blog" });
+    }
+}
