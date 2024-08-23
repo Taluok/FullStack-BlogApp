@@ -2,6 +2,7 @@
 import { assets, blog_data } from '@/Assets/assets';
 import Footer from '@/Components/Footer';
 import Image from 'next/image';
+import Link from 'next/link';
 import React, { useEffect, useState } from 'react';
 
 const Page = ({ params }) => {
@@ -22,7 +23,9 @@ const Page = ({ params }) => {
         data ? <>
             <div className='bg-gray-200 py-5 px-5 md:px-12 lg:px-28'>
                 <div className="flex justify-between items-center">
+                    <Link href='/'>
                     <Image src={assets.logo_gris} width={180} alt='Logo gris' className='w-[130px] sm:w-auto' />
+                    </Link>
                     <button className="flex items-center gap-2 font-medium py-1 px-3 sm:py-3 sm:px-6 border border-black shadow-[-7px_7px_0px_#000000]">
                         Comenzar <Image src={assets.arrow} alt='Flecha' />
                     </button>
