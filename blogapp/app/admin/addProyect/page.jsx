@@ -1,12 +1,15 @@
 'use client'
-import { assets } from '@/Assets/assets';
-import axios from 'axios';
-import Image from 'next/image';
-import React, { useState } from 'react';
-import { toast } from 'react-toastify';
+import { assets } from '@/Assets/assets';  
+import axios from 'axios';  
+import Image from 'next/image';  
+import React, { useState } from 'react';  
+import { toast } from 'react-toastify';  
 
 const Page = () => {
+    // Estado para almacenar la imagen seleccionada
     const [image, setImage] = useState(null);
+    
+    // Estado para almacenar los datos del formulario
     const [data, setData] = useState({
         title: "",
         description: "",
@@ -15,37 +18,43 @@ const Page = () => {
         authorImg: "/author_img.png"
     });
 
+    // Maneja el cambio de valores en los campos del formulario
     const onChangeHandler = (event) => {
         const { name, value } = event.target;
         setData(prevData => ({ ...prevData, [name]: value }));
     }
 
+    // Maneja el envío del formulario
     const onSubmitHandler = async (e) => {
-        e.preventDefault();
-        const formData = new FormData();
+        e.preventDefault();  // Previene el comportamiento predeterminado del formulario
+        const formData = new FormData();  // Crea un objeto FormData para enviar archivos
+        // Añade todos los campos del formulario a formData
         formData.append('title', data.title);
         formData.append('description', data.description);
         formData.append('category', data.category);
         formData.append('author', data.author);
         formData.append('authorImg', data.authorImg);
         formData.append('image', image);
+        
+        // Realiza una solicitud POST a la API para crear un nuevo blog
         const response = await axios.post('/api/blog', formData);
         if (response.data.success) {
-            toast.success(response.data.msg)
-            setImage(false);
+            toast.success(response.data.msg);  // Muestra un mensaje de éxito
+            // Reinicia los campos del formulario y la imagen seleccionada
+            setImage(null);
             setData({
                 title: "",
                 description: "",
                 category: "Startup",
                 author: "Alex Bennett",
                 authorImg: "/author_img.png"
-            })
-        }
-        else {
-            toast.error("Error")
+            });
+        } else {
+            toast.error("Error");  // Muestra un mensaje de error
         }
     }
 
+    // Maneja la selección de una nueva imagen
     const onImageChange = (event) => {
         const file = event.target.files[0];
         if (file) {
@@ -59,7 +68,7 @@ const Page = () => {
             <label htmlFor="image">
                 <Image
                     className='mt-4'
-                    src={image ? URL.createObjectURL(image) : assets.upload_area}
+                    src={image ? URL.createObjectURL(image) : assets.upload_area}  // Muestra la imagen seleccionada o un área de carga por defecto
                     alt='Miniatura del blog'
                     width={140}
                     height={70}
@@ -112,4 +121,5 @@ const Page = () => {
 }
 
 export default Page;
+
 

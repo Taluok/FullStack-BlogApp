@@ -7,26 +7,20 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios'; 
 
 const Page = ({ params }) => {
-    const [data, setData] = useState(null); // Hook de estado para almacenar los datos del blog.
+    const [data, setData] = useState(null);
 
-    // Función para obtener los datos del blog desde la API usando axios.
-    const fetchBlogData = async () => {
-        try {
-            const response = await axios.get('/api/blog', { // Corrige un error de sintaxis.
-                params: {
-                    id: params.id // Pasa el id del blog como parámetro a la API.
-                }
-            });
-            setData(response.data); // Actualiza el estado con los datos obtenidos.
-        } catch (error) {
-            console.error("Error fetching blog data:", error); // Manejo de errores.
-        }
-    };
+    const fetchBlogData = useCallback(async () => {
+        const response = await axios.get('/api/blog', {
+            params: {
+                id: params.id
+            }
+        });
+        setData(response.data);
+    }, [params.id]);
 
-    // useEffect se ejecuta una vez cuando el componente se monta para obtener los datos del blog.
     useEffect(() => {
         fetchBlogData();
-    }, []); // Dependencia vacía significa que se ejecuta solo una vez al montar.
+    }, [fetchBlogData]); // Dependencia vacía significa que se ejecuta solo una vez al montar.
 
     return (
         data ? ( // Renderiza el contenido solo si hay datos disponibles.
