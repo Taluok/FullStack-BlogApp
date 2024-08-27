@@ -52,6 +52,7 @@ const Page = () => { // Nombres de componentes en mayúscula según convenciones
                                 author={item.author} 
                                 authorImg={item.authorImg} 
                                 date={item.date} 
+                                deleteBlog={deleteBlog}
                             />
                         ))}
                     </tbody>

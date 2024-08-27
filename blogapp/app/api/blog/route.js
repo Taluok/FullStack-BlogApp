@@ -2,6 +2,7 @@ import { ConnectDB } from "@/lib/config/db";
 import { NextResponse } from "next/server";
 import { writeFile } from 'fs/promises';
 import BlogModel from "@/lib/models/BlogModel";
+const fs = require('fs')
 
 // Asegura que la base de datos esté conectada antes de cualquier operación
 const LoadDB = async () => {
@@ -58,3 +59,13 @@ export async function POST(request) {
         return NextResponse.json({ success: false, msg: "Error al guardar el blog" });
     }
 }
+
+//Creating API endpoint to delete blog
+export async function DELETe(request){
+    const id = await request.nextUrl.searchParams.get('id');
+    const blog = await BlogModel.findById(id);
+    fs.unlink(`./public${blog.image}`,()=>{});
+    await BlogModel.findByIdAndDelete(id);
+    return NextResponse.json({msg:"Blog Eliminado"})
+}
+
